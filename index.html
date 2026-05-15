@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplikasi Interaktif Rawatan Awal Kecemasan Murid</title>
+<!-- Tailwind CSS untuk reka bentuk responsif -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Chart.js untuk visualisasi data -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body {
+    background-color: #F8FAFC;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 350px;
+    max-height: 400px;
+}
+.chart-container-large {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 400px;
+    max-height: 500px;
+}
+@media (max-width: 768px) {
+    .chart-container, .chart-container-large { height: 300px; }
+}
+.emergency-card {
+    transition: all 0.2s ease-in-out;
+}
+.emergency-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.active-filter {
+    background-color: #0F766E;
+    color: white;
+}
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+</style>
+</head>
+<body class="text-slate-800 antialiased">
+
+<nav class="bg-[#1E3A8A] text-white sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex items-center">
+                <span class="font-bold text-xl tracking-wide">&#10010; Sistem Pengurusan Kecemasan Murid</span>
+            </div>
+            <div class="hidden md:block">
+                <div class="ml-10 flex items-baseline space-x-4 text-sm font-medium">
+                    <a href="#vital-stats" class="hover:bg-blue-800 px-3 py-2 rounded-md transition-colors">Parameter Penting</a>
+                    <a href="#explorer" class="hover:bg-blue-800 px-3 py-2 rounded-md transition-colors">Eksplorasi Rawatan</a>
+                    <a href="#analisis" class="hover:bg-blue-800 px-3 py-2 rounded-md transition-colors">Analisis Risiko</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<header class="bg-gradient-to-r from-[#0F766E] to-[#14B8A6] text-white py-12 px-4 shadow-inner">
+    <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-3xl md:text-5xl font-extrabold mb-4 leading-tight drop-shadow-md">Panduan Interaktif Rawatan Awal Kecemasan di Sekolah</h1>
+        <p class="text-lg md:text-xl text-teal-50 mb-8 font-light">Berdasarkan modul amalan Kementerian Kesihatan Malaysia (KKM). Aplikasi ini direka untuk membantu warga pendidik mengenal pasti simptom, mengambil tindakan pantas, dan mengelakkan kesilapan kritikal.</p>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-8 space-y-16">
+
+    <section id="vital-stats">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-[#1E3A8A] mb-3">Parameter Kritikal Penyakit Biasa</h2>
+            <p class="text-slate-600 max-w-2xl mx-auto">Bahagian ini memaparkan penanda aras angka yang paling penting untuk dihafal oleh guru. Mengetahui angka-angka ini membolehkan tindakan tepat diambil sebelum memanggil ambulans.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-[#EF4444] emergency-card">
+                <div class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Ambang Demam</div>
+                <div class="text-5xl font-extrabold text-[#EF4444] mb-2">&gt; 37.5&deg;C</div>
+                <p class="text-sm text-slate-600 mt-4 border-t pt-4">&#10004; Tindakan: Lakukan <em>Tepid Sponging</em> (lap tuala basah) dan letak murid di bilik berkipas, bukan berhawa dingin sejuk.</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-[#F59E0B] emergency-card">
+                <div class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Had Masa Sawan</div>
+                <div class="text-5xl font-extrabold text-[#F59E0B] mb-2">5 Minit</div>
+                <p class="text-sm text-slate-600 mt-4 border-t pt-4">&#10071; Amaran: Sawan berterusan melebihi masa ini adalah kecemasan <em>Status Epilepticus</em>. Hubungi 999 segera. Catat masa mula sawan.</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-[#3B82F6] emergency-card">
+                <div class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Siraman Melecur</div>
+                <div class="text-5xl font-extrabold text-[#3B82F6] mb-2">15-20 Min</div>
+                <p class="text-sm text-slate-600 mt-4 border-t pt-4">&#10004; Tindakan: Alirkan air paip suhu biasa. Jangan letak ubat gigi atau pecahkan lepuh air.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="explorer" class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-slate-100">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-[#1E3A8A] mb-3">Eksplorasi Modul Rawatan 20 Situasi</h2>
+            <p class="text-slate-600">Sistem penapisan dinamik ini membolehkan anda mencari prosedur tindakan awal dengan pantas. Pilih kategori di bawah atau klik pada senarai kecemasan untuk melihat maklumat terperinci mengenai simptom, tindakan yang betul, dan pantang larang.</p>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <div class="lg:w-1/3 flex flex-col h-[600px]">
+                <div class="mb-4 flex flex-wrap gap-2" id="filter-container">
+                </div>
+                <div class="flex-1 overflow-y-auto custom-scrollbar border rounded-lg bg-slate-50 p-2" id="emergency-list">
+                </div>
+            </div>
+
+            <div class="lg:w-2/3 bg-slate-50 rounded-xl p-6 border border-slate-200" id="detail-pane">
+                <div class="flex flex-col items-center justify-center h-full text-slate-400">
+                    <div class="text-6xl mb-4">&#128072;</div>
+                    <p class="text-lg text-center px-4">Sila pilih jenis kecemasan dari senarai di sebelah kiri untuk melihat prosedur rawatan.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="analisis" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <h3 class="text-xl font-bold text-[#1E3A8A] mb-2">Taburan Kategori Kecemasan</h3>
+            <p class="text-sm text-slate-600 mb-6">Carta menunjukkan pecahan 20 jenis kecemasan mengikut modul silibus KKM. Ini membantu sekolah menumpukan latihan pertolongan cemas pada kategori yang paling banyak merangkumi jenis kes.</p>
+            <div class="chart-container">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <h3 class="text-xl font-bold text-[#1E3A8A] mb-2">Indeks Rujukan Segera (Hospital)</h3>
+            <p class="text-sm text-slate-600 mb-6">Analisis tahap kritikal yang memerlukan guru menghubungi ambulans (999) atau menghantar murid ke hospital serta-merta tanpa berlengah. Skala 1 (Rendah) hingga 10 (Sangat Kritikal).</p>
+            <div class="chart-container">
+                <canvas id="severityChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 py-8 text-center text-sm border-t-4 border-[#0F766E]">
+    <div class="max-w-7xl mx-auto px-4">
+        <p class="mb-2 text-white font-semibold">Sistem Pengurusan Maklumat Kesihatan Sekolah</p>
+        <p>Aplikasi Interaktif - Diolah daripada Dokumen Pengurusan Kesihatan Murid</p>
+    </div>
+</footer>
+
+<script>
+const db = [
+    { id: 1, name: "1. Demam", category: "Penyakit Biasa", catId: "penyakit",
+      signs: "Suhu melebihi 37.5°C.",
+      actions: ["Pantau suhu setiap 2-4 jam menggunakan termometer (dahi/telinga).", "Letakkan murid di bilik berkipas dengan pengudaraan baik.", "Pakai pakaian kapas nipis.", "Letak Cool fever di dahi, leher, ketiak, atau celah kelangkang.", "Beri minum air suam/suhu bilik atau air elektrolit.", "Lakukan Tepid Sponging (lap badan dengan tuala basah)."],
+      donts: ["JANGAN selimutkan dengan kain tebal.", "JANGAN letak di bilik berhawa dingin yang terlalu sejuk.", "JANGAN beri air ais/sejuk."],
+      hospital: "Suhu kekal tinggi melebihi 39°C, murid sangat lemah atau mula menggigil teruk." },
+      
+    { id: 2, name: "2. Sawan", category: "Penyakit Biasa", catId: "penyakit",
+      signs: "Renungan kosong, otot kejang, mata terbeliak ke atas, mulut berbuih.",
+      actions: ["Alihkan objek berbahaya di sekeliling.", "Alas kepala dengan benda lembut.", "Baringkan dalam Posisi Pemulihan (mengiring) SELEPAS sawan berhenti.", "Rekod masa bermula dan tempoh sawan berlaku."],
+      donts: ["JANGAN masukkan apa-apa objek/sudu ke dalam mulut (mitos bahaya).", "JANGAN tahan atau ikat pergerakan murid ketika kejang."],
+      hospital: "Jika sawan berterusan MELEBIHI 5 MINIT (Status Epilepticus)." },
+      
+    { id: 3, name: "3. Lelah (Asma)", category: "Penyakit Biasa", catId: "penyakit",
+      signs: "Bunyi berdehit (wheezing), batuk berterusan, dada berombak laju, mengadu dada ketat.",
+      actions: ["Tenangkan murid dan dudukkan mereka di kerusi (membantu paru-paru mengembang).", "Bantu murid menggunakan Inhaler (pam warna biru - Salbutamol) bersama spacer jika ada."],
+      donts: ["JANGAN baringkan murid semasa sesak nafas.", "JANGAN biarkan murid dikerumuni terlalu ramai orang."],
+      hospital: "Tiada perubahan selepas 2-3 dos inhaler (dalam masa 10 min), atau bibir/jari menjadi kebiruan." },
+      
+    { id: 4, name: "4. Sakit Dada", category: "Penyakit Biasa", catId: "penyakit",
+      signs: "Sakit seperti dihimpit beban berat, merebak ke lengan/rahang, sesak nafas, peluh sejuk.",
+      actions: ["Dudukkan murid berehat di kerusi bersandar.", "Longgarkan pakaian seperti tali leher atau butang kolar."],
+      donts: ["JANGAN benarkan murid berjalan atau bergerak aktif.", "JANGAN beri sebarang ubat tanpa arahan doktor."],
+      hospital: "Sakit berterusan melebihi 10 minit atau kelihatan sangat pucat." },
+      
+    { id: 5, name: "5. Hidung Berdarah", category: "Luka & Pendarahan", catId: "luka",
+      signs: "Pendarahan dari saluran hidung secara tiba-tiba.",
+      actions: ["Tundukkan kepala murid ke HADAPAN.", "Arahkan murid picit bahagian lembut hidung (bawah tulang hidung) selama 10 minit tanpa henti.", "Arahkan murid bernafas melalui mulut.", "Letakkan ketulan ais berbalut kain di dahi atau pangkal hidung."],
+      donts: ["JANGAN mendongak kepala ke atas (darah akan masuk ke kerongkong, menyebabkan batuk/tersedak/muntah)."],
+      hospital: "Darah tidak berhenti memancut selepas rawatan tekanan berterusan lebih 15-20 minit." },
+      
+    { id: 6, name: "6. Paku Berkarat / Kaca", category: "Luka & Pendarahan", catId: "luka",
+      signs: "Objek tajam tertusuk pada tapak kaki atau bahagian badan lain.",
+      actions: ["Tenangkan murid.", "Cuci dengan air membuang kotoran JIKA objek hanya tercucuk di permukaan/kecil.", "Balut kain/kasa sekeliling objek untuk menstabilkannya JIKA ia tertusuk dalam."],
+      donts: ["JANGAN cabut objek yang tertusuk dalam atau besar (boleh menyebabkan pendarahan dalaman teruk)."],
+      hospital: "MESTI dirujuk ke klinik/hospital segera untuk suntikan Tetanus (Kancing Gigi) bagi kes paku berkarat." },
+      
+    { id: 7, name: "7. Luka Kecil", category: "Luka & Pendarahan", catId: "luka",
+      signs: "Luka calar, geseran, atau luka cetek pada lapisan kulit.",
+      actions: ["WAJIB cuci dengan air paip mengalir terlebih dahulu untuk membuang kotoran.", "Sapu antiseptik (iodin sudah memadai, tidak perlu campur antiseptik lain) di SEKELILING luka.", "Keringkan luka perlahan (dap-dap) dengan kasa, tutup dengan plaster."],
+      donts: ["JANGAN tuang alkohol swab atau iodin terus ke DALAM luka yang terbuka luas (merosakkan tisu dan melambatkan penyembuhan)."],
+      hospital: "Hanya jika luka kelihatan bernanah atau bengkak teruk pada hari-hari berikutnya." },
+      
+    { id: 8, name: "8. Luka Besar (Koyak)", category: "Luka & Pendarahan", catId: "luka",
+      signs: "Koyakan besar pada kulit (contoh: kepala, dahi) dengan pendarahan aktif yang banyak.",
+      actions: ["Beri tekanan langsung (Direct Pressure) tepat pada luka guna kain kasa/tuala bersih untuk hentikan darah.", "Tinggikan bahagian yang luka jika ia melibatkan anggota tangan/kaki."],
+      donts: ["JANGAN angkat kain pembalut pertama jika ia lencun dengan darah (ia merosakkan darah beku yang sedang terbentuk). Tambah kain kedua di atasnya dan terus tekan."],
+      hospital: "Segera bawa ke hospital semasa mengenakan tekanan pembalut secara berterusan." },
+      
+    { id: 9, name: "9. Sengatan Tebuan / Lebah", category: "Kemalangan Fizikal", catId: "fizikal",
+      signs: "Sakit tajam, kemerahan, bengkak di kawasan sengatan.",
+      actions: ["Jika nampak pundi sengat (lebah), kikis perlahan menggunakan bucu kad plastik (seperti kad ID pelajar).", "Tuam dengan ketulan ais di kawasan sengatan untuk kurangkan bengkak."],
+      donts: ["JANGAN picit tempat sengatan (picitan akan menekan lebih banyak racun masuk ke dalam badan)."],
+      hospital: "KECEMASAN MAUT (Anaphylaxis) jika murid mula sesak nafas, bibir/muka bengkak, atau gatal ruam seluruh badan." },
+
+    { id: 10, name: "10. Masalah Perut", category: "Gastrousus & Cuaca", catId: "cuaca",
+      signs: "Sakit perut, pedih ulu hati (rasa perit di dada/masam di tekak) atau kembung angin akibat tidak sarapan.",
+      actions: ["Kenal pasti jenis sakit perut (Pedih hulu hati vs masuk angin).", "Rehatkan murid dan beri air suam atau biskut jika berpunca dari belum makan."],
+      donts: ["JANGAN abaikan jika sakit melampau berdenyut di bahagian tertentu.", "JANGAN beri makanan berat pedas/masam."],
+      hospital: "Sakit tajam bahagian bawah kanan abdomen, berdenyut tidak tertahan, disusuli demam/muntah (Risiko Apendisitis)." },
+      
+    { id: 11, name: "11. Pening Kepala", category: "Gastrousus & Cuaca", catId: "cuaca",
+      signs: "Bilik terasa berpusing (Vertigo) atau rasa ringan kepala/berpinar akibat lapar/cuaca/stres.",
+      actions: ["Baringkan murid segera untuk elak terjatuh.", "Jika rasa ringan kepala, tinggikan kaki melebihi paras jantung."],
+      donts: ["JANGAN biarkan murid berdiri atau berjalan bersendirian.", "JANGAN buat pergerakan kepala yang mengejut."],
+      hospital: "Pening melampau yang tidak hilang selepas berehat lama atau disusuli dengan simptom saraf." },
+      
+    { id: 12, name: "12. Muntah", category: "Gastrousus & Cuaca", catId: "cuaca",
+      signs: "Rasa loya, mual dan mengeluarkan isi perut.",
+      actions: ["Rehatkan murid dalam keadaan duduk tunduk ke hadapan atau baring mengiring.", "Beri sips (tegukan kecil) air suam atau elektrolit secara berkala SELEPAS muntah berhenti rehat."],
+      donts: ["JANGAN paksa minum air yang banyak secara serentak (memicu muntah semula).", "JANGAN terus beri makanan pepejal berat."],
+      hospital: "Jika muntah berwarna hijau (hempedu), bercampur darah, atau muntah memancut (projectile vomiting) terutama selepas jatuh terhentak kepala." },
+
+    { id: 13, name: "13. Benjol Akibat Terjatuh", category: "Kemalangan Fizikal", catId: "fizikal",
+      signs: "Bengkak di bahagian kepala akibat trauma kesan benda tumpul.",
+      actions: ["Tuam ketulan ais (dibalut kain nipis) di kawasan benjol selama 10-15 minit untuk redakan bengkak.", "Rehatkan murid dan pantau tingkah laku/kesedaran secara teliti."],
+      donts: ["JANGAN urut kasar kawasan benjol.", "JANGAN sapu minyak panas/angin di luka benjol."],
+      hospital: "JIKA BENJOL DISUSULI: muntah-muntah, pening melampau, keliru, mengantuk luar biasa, atau keluar darah jernih dari telinga/hidung (Tanda Gegar Otak)." },
+      
+    { id: 14, name: "14. Strok Haba (Heat Stroke)", category: "Gastrousus & Cuaca", catId: "cuaca",
+      signs: "Berbeza dengan keletihan haba biasa (berpeluh). Strok Haba: Badan sangat panas, TIDAK BERPELUH LANGSUNG, kulit merah kering, nadi laju, keliru, pengsan.",
+      actions: ["Alihkan segera ke tempat teduh/berhawa dingin.", "Longgarkan pakaian murid.", "Lap badan dengan air sejuk (Tepid sponging) & kipaskan dengan kuat."],
+      donts: ["JANGAN beri minum air JIKA murid keliru atau tidak sedar sepenuhnya (risiko tersedak masuk paru-paru)."],
+      hospital: "KECEMASAN MAUT. Panggil ambulans (999) segera tanpa berlengah." },
+      
+    { id: 15, name: "15. Kecederaan Mata", category: "Kemalangan Fizikal", catId: "fizikal",
+      signs: "Mata merah pedih (habuk/kimia) ATAU objek tertusuk, pendarahan dalaman bola mata.",
+      actions: ["Habuk/Kimia: Basuh bawah air paip mengalir serta-merta 15-20 minit (arahkan kelip mata di bawah air).", "Objek tertusuk: Tutup kedua-dua belah mata dengan cawan kertas/kasa untuk minimumkan pergerakan selari bola mata."],
+      donts: ["JANGAN SEKALI-KALI MENGGOSOK MATA.", "JANGAN cabut objek yang tertusuk di mata.", "JANGAN cuci mata jika ada luka tembus."],
+      hospital: "Segera ke hospital mata (Jabatan Oftalmologi) untuk kecederaan kimia, luka tertusuk atau hilang penglihatan." },
+      
+    { id: 16, name: "16. Melecur (Bakar)", category: "Kemalangan Fizikal", catId: "fizikal",
+      signs: "Tahap 1 (merah/pedih), Tahap 2 (lepuh/gelembung air), Tahap 3 (putih/hitam tiada rasa sakit kerana saraf rosak).",
+      actions: ["Alirkan bahagian melecur di bawah air paip bersuhu biasa secara berterusan selama 15-20 minit untuk hentikan proses pembakaran tisu bawah kulit."],
+      donts: ["JANGAN letak ubat gigi, mentega, kicap, tepung (memerangkap haba & mengundang jangkitan kuman).", "JANGAN pecahkan lepuh/gelembung air."],
+      hospital: "Jika melecur di kawasan muka, sendi-sendi utama, alat sulit, atau saiz kelecuran melebihi saiz tapak tangan mangsa." },
+      
+    { id: 17, name: "17. Pengsan (Syncope)", category: "Gastrousus & Cuaca", catId: "cuaca",
+      signs: "Pucat, peluh sejuk, pandangan menjadi gelap/berpinar, jatuh tidak sedarkan diri. Punca: berdiri lama semasa perhimpunan, cuaca panas, atau lapar.",
+      actions: ["Baringkan murid terlentang secara rata.", "Tinggikan bahagian kaki melebihi paras jantung (memudahkan aliran darah kembali ke otak).", "Beri minuman manis/makanan HANYA selepas murid sedar sepenuhnya."],
+      donts: ["JANGAN tuang air ke mulut semasa murid belum sedar sepenuhnya.", "JANGAN paksa murid terus berdiri tegak sejurus selepas sedar."],
+      hospital: "Jika murid tidak sedar selepas beberapa minit, atau pernafasan kelihatan terhenti/tidak normal." },
+      
+    { id: 18, name: "18. Anxiety (Kebimbangan)", category: "Mental & Emosi", catId: "mental",
+      signs: "Kerisauan berlebihan tentang sesuatu (peperiksaan, rakan), gelisah, menggeletar, atau berpeluh secara berterusan.",
+      actions: ["Dekati murid dan hadir secara fizikal di sisinya.", "Gunakan nada suara yang perlahan, tenang dan memujuk ('Cikgu ada di sini, awak selamat')."],
+      donts: ["JANGAN paksa murid bercerita jika mereka belum bersedia.", "JANGAN remehkan perasaan mereka (elak cakap 'jangan risau benda kecil je, takde apa')."],
+      hospital: "Rujuk kepada Guru Kaunseling sekolah. Rujuk doktor perubatan jika berterusan jejaskan fungsi harian dan akademik." },
+      
+    { id: 19, name: "19. Panic Attack", category: "Mental & Emosi", catId: "mental",
+      signs: "Serangan mengejut: Jantung berdegup sangat laju, nafas pendek, dada ketat (sering disalah anggap sebagai serangan asma atau sakit jantung).",
+      actions: ["Bawa murid segera ke ruang yang sunyi dan tenang.", "Ajar teknik pernafasan Box Breathing (Tarik nafas 4 saat, tahan 4 saat, hembus 4 saat, tahan 4 saat)."],
+      donts: ["JANGAN biarkan murid di tempat terbuka di mana ramai orang berkerumun melihatnya.", "JANGAN ikut panik bersama murid."],
+      hospital: "Jika simptom pernafasan/jantung tidak reda selepas 15-20 minit menenangkan diri untuk ketepikan risiko masalah asma/jantung sebenar." },
+      
+    { id: 20, name: "20. Patah Tulang", category: "Kemalangan Fizikal", catId: "fizikal",
+      signs: "Sakit teramat sangat, bengkak besar, berubah bentuk (bengkok tidak natural), dengar bunyi kruk krap semasa jatuh. Perbezaan: Terseliuh (cedera sendi/ligamen), Patah (tulang).",
+      actions: ["Gunakan splint (kayu lurus, kadbod keras, papan, atau majalah tebal) dan ikat dengan kain di atas dan bawah sendi tempat patah sebagai sokongan sementara."],
+      donts: ["JANGAN urut anggota badan yang disyaki patah.", "JANGAN gerakkan anggota secara sembarangan.", "JANGAN cuba tarik atau betulkan tulang yang bengkok kembali ke bentuk asal."],
+      hospital: "Rujuk hospital dengan segera untuk imbasan X-Ray dan rawatan prosedur simen/pembedahan." }
+];
+
+const categories = [
+    { id: "all", label: "Semua Kategori" },
+    { id: "penyakit", label: "Penyakit Biasa" },
+    { id: "luka", label: "Luka & Darah" },
+    { id: "fizikal", label: "Kecederaan Fizikal" },
+    { id: "cuaca", label: "Gastrousus & Cuaca" },
+    { id: "mental", label: "Mental & Emosi" }
+];
+
+let currentFilter = "all";
+
+function initExplorer() {
+    const filterContainer = document.getElementById("filter-container");
+    categories.forEach(cat => {
+        const btn = document.createElement("button");
+        btn.className = `px-3 py-1.5 text-sm rounded-full font-medium transition-colors border ${cat.id === 'all' ? 'active-filter border-[#0F766E]' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'}`;
+        btn.innerText = cat.label;
+        btn.onclick = () => {
+            currentFilter = cat.id;
+            document.querySelectorAll("#filter-container button").forEach(b => {
+                b.className = `px-3 py-1.5 text-sm rounded-full font-medium transition-colors border bg-white text-slate-600 border-slate-300 hover:bg-slate-100`;
+            });
+            btn.className = `px-3 py-1.5 text-sm rounded-full font-medium transition-colors border active-filter border-[#0F766E]`;
+            renderList();
+            document.getElementById('detail-pane').innerHTML = `
+                <div class="flex flex-col items-center justify-center h-full text-slate-400">
+                    <div class="text-6xl mb-4">&#128072;</div>
+                    <p class="text-lg text-center px-4">Sila pilih jenis kecemasan dari senarai di sebelah kiri untuk melihat prosedur rawatan.</p>
+                </div>`;
+        };
+        filterContainer.appendChild(btn);
+    });
+    renderList();
+}
+
+function renderList() {
+    const listContainer = document.getElementById("emergency-list");
+    listContainer.innerHTML = '';
+    const filteredDb = currentFilter === 'all' ? db : db.filter(item => item.catId === currentFilter);
+    
+    filteredDb.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "p-3 mb-2 bg-white rounded border border-slate-200 cursor-pointer hover:border-[#0F766E] hover:bg-teal-50 transition-colors";
+        div.innerHTML = `<div class="font-bold text-slate-800">${item.name}</div><div class="text-xs text-slate-500">${item.category}</div>`;
+        div.onclick = () => renderDetail(item.id);
+        listContainer.appendChild(div);
+    });
+}
+
+function renderDetail(id) {
+    const item = db.find(i => i.id === id);
+    const pane = document.getElementById("detail-pane");
+    
+    let actionsHtml = item.actions.map(a => `<li class="flex items-start mb-2"><span class="text-[#0F766E] mr-2 text-lg leading-none">&#10004;</span><span class="pt-0.5">${a}</span></li>`).join('');
+    let dontsHtml = item.donts.map(d => `<li class="flex items-start mb-2"><span class="text-[#EF4444] mr-2 text-lg leading-none">&#10008;</span><span class="font-medium pt-0.5">${d}</span></li>`).join('');
+    
+    pane.innerHTML = `
+        <div class="border-b pb-4 mb-4">
+            <span class="inline-block px-2 py-1 bg-teal-100 text-[#0F766E] text-xs font-bold rounded mb-2">${item.category}</span>
+            <h3 class="text-2xl font-bold text-[#1E3A8A]">${item.name}</h3>
+        </div>
+        
+        <div class="mb-6 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+            <h4 class="font-bold text-yellow-800 mb-1">Tanda / Simptom Utama:</h4>
+            <p class="text-sm text-yellow-900">${item.signs}</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <h4 class="font-bold text-slate-800 border-b-2 border-[#0F766E] pb-1 mb-3 inline-block">Tindakan Rawatan Awal</h4>
+                <ul class="text-sm text-slate-700">${actionsHtml}</ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-slate-800 border-b-2 border-[#EF4444] pb-1 mb-3 inline-block">Kesilapan / Dilarang</h4>
+                <ul class="text-sm text-slate-700">${dontsHtml}</ul>
+            </div>
+        </div>
+
+        <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+            <h4 class="font-bold text-red-800 mb-1 flex items-center"><span class="mr-2 text-xl">&#10071;</span> Bila Perlu Rujuk Hospital / 999</h4>
+            <p class="text-sm text-red-900 font-medium">${item.hospital}</p>
+        </div>
+    `;
+}
+
+function wrapLabel(label) {
+    if (label.length <= 16) return label;
+    const words = label.split(' ');
+    const lines = [];
+    let currentLine = '';
+    words.forEach(word => {
+        if ((currentLine + word).length > 16) {
+            if (currentLine) lines.push(currentLine.trim());
+            currentLine = word + ' ';
+        } else {
+            currentLine += word + ' ';
+        }
+    });
+    if (currentLine) lines.push(currentLine.trim());
+    return lines;
+}
+
+const tooltipConfig = {
+    callbacks: {
+        title: function(tooltipItems) {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) return label.join(' ');
+            return label;
+        }
+    }
+};
+
+function initCharts() {
+    const ctxCat = document.getElementById('categoryChart').getContext('2d');
+    new Chart(ctxCat, {
+        type: 'doughnut',
+        data: {
+            labels: [
+                wrapLabel('Penyakit Biasa & Jangkitan'), 
+                wrapLabel('Luka & Pendarahan'), 
+                wrapLabel('Kemalangan & Fizikal'), 
+                wrapLabel('Gastrousus & Cuaca'), 
+                wrapLabel('Mental & Emosi')
+            ],
+            datasets: [{
+                data: [4, 4, 5, 5, 2],
+                backgroundColor: ['#1E3A8A', '#EF4444', '#F59E0B', '#0F766E', '#8B5CF6'],
+                borderWidth: 2,
+                borderColor: '#ffffff',
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: {
+                legend: { position: 'bottom', labels: { font: { size: 12 } } },
+                tooltip: tooltipConfig
+            }
+        }
+    });
+
+    const ctxSev = document.getElementById('severityChart').getContext('2d');
+    new Chart(ctxSev, {
+        type: 'bar',
+        data: {
+            labels: [
+                wrapLabel('Strok Haba (Kering/Tak Berpeluh)'),
+                wrapLabel('Sengatan Tebuan (Anaphylaxis)'),
+                wrapLabel('Sawan > 5 Minit'),
+                wrapLabel('Patah Tulang / Bunyi Kruk Krap'),
+                wrapLabel('Objek Dalam Mata / Luka Mata'),
+                wrapLabel('Benjol Susuli Muntah/Pengsan'),
+                wrapLabel('Luka Besar Koyak'),
+                wrapLabel('Paku Berkarat (Tetanus)')
+            ],
+            datasets: [{
+                label: 'Indeks Urgensi (1-10)',
+                data: [10, 10, 9, 9, 8, 8, 7, 7],
+                backgroundColor: function(context) {
+                    const val = context.raw;
+                    return val >= 9 ? '#EF4444' : (val >= 8 ? '#F59E0B' : '#3B82F6');
+                },
+                borderRadius: 4
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { beginAtZero: true, max: 10, grid: { display: true, color: '#f1f5f9' } },
+                y: { grid: { display: false }, ticks: { font: { weight: '600' } } }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: tooltipConfig
+            }
+        }
+    });
+}
+
+window.onload = () => {
+    initExplorer();
+    initCharts();
+};
+</script>
+</body>
+</html>
